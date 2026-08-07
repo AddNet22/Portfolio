@@ -39,16 +39,17 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git clone https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/AddNet22/Portfolio.git portfolio-repo
 
-      # Step 6: Copy Vite build output (dist) to public Portfolio repo
+      # Step 6: Copy Vite build output (dist) including .nojekyll and app-ads.txt
       - name: Copy build to Portfolio
         run: |
           rm -rf portfolio-repo/*
-          cp -r dist/* portfolio-repo/
+          cp -r dist/. portfolio-repo/
+          touch portfolio-repo/.nojekyll
 
       # Step 7: Commit and Push to public Portfolio repo
       - name: Commit and Push to Portfolio
         run: |
           cd portfolio-repo
-          git add .
-          git commit -m "Deploy React Portfolio with app-ads.txt" || echo "No changes to commit"
+          git add -A
+          git commit -m "Deploy React Portfolio with app-ads.txt & .nojekyll" || echo "No changes to commit"
           git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/AddNet22/Portfolio.git main
