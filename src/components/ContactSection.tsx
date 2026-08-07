@@ -6,13 +6,21 @@ export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: 'General',
+    subject: 'Question Générale',
     message: '',
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Automatically launch mailto: with pre-filled inputs
+    const subjectLine = encodeURIComponent(`[Portfolio Contact] ${formData.subject} - ${formData.name}`);
+    const bodyContent = encodeURIComponent(
+      `Bonjour Loïc,\n\nNom: ${formData.name}\nEmail: ${formData.email}\nObjet: ${formData.subject}\n\nMessage:\n${formData.message}\n`
+    );
+
+    window.location.href = `mailto:loicmeurantpro@gmail.com?subject=${subjectLine}&body=${bodyContent}`;
     setIsSubmitted(true);
   };
 
@@ -31,7 +39,7 @@ export const ContactSection: React.FC = () => {
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-[#64FFDA] to-[#6C63FF] rounded-full mb-6" />
           <p className="text-[#8892B0] text-base sm:text-lg max-w-2xl">
-            Une question sur une application ou une demande de suppression de compte ? Envoyez-moi un message directement.
+            Une question sur une application ou une demande de suppression de compte ? Remplissez le formulaire pour m'envoyer directement un e-mail.
           </p>
         </div>
 
@@ -78,22 +86,22 @@ export const ContactSection: React.FC = () => {
                   <div className="w-16 h-16 rounded-full bg-[#64FFDA]/20 text-[#64FFDA] flex items-center justify-center mx-auto">
                     <CheckCircle2 className="w-10 h-10" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Message envoyé !</h3>
+                  <h3 className="text-2xl font-bold text-white">Application email ouverte !</h3>
                   <p className="text-[#8892B0] text-sm max-w-md mx-auto">
-                    Merci pour votre message. Je vous répondrai à l'adresse <strong>{formData.email}</strong> dans les meilleurs délais.
+                    Votre client mail a été ouvert pré-rempli pour envoyer votre message à <strong>{profileData.email}</strong>.
                   </p>
                   <button
                     onClick={() => setIsSubmitted(false)}
-                    className="mt-4 px-6 py-2.5 rounded-xl bg-[#0A192F] text-[#64FFDA] text-sm font-semibold border border-[#64FFDA]/30 hover:bg-[#64FFDA] hover:text-[#0A192F] transition-all"
+                    className="mt-4 px-6 py-2.5 rounded-xl bg-[#0A192F] text-[#64FFDA] text-sm font-semibold border border-[#64FFDA]/30 hover:bg-[#64FFDA] hover:text-[#0A192F] transition-all cursor-pointer"
                   >
-                    Envoyer un autre message
+                    Rédiger un autre message
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <h3 className="text-2xl font-bold text-white mb-2 flex items-center space-x-2">
                     <MessageSquare className="w-6 h-6 text-[#64FFDA]" />
-                    <span>Envoyer un message</span>
+                    <span>Envoyer un e-mail</span>
                   </h3>
 
                   <div>
@@ -101,7 +109,7 @@ export const ContactSection: React.FC = () => {
                     <input
                       type="text"
                       required
-                      placeholder="Loïc Meurant"
+                      placeholder="Votre Nom"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-[#0A192F] border border-[#64FFDA]/20 text-white placeholder-[#8892B0]/50 focus:outline-none focus:border-[#64FFDA] transition-colors text-sm"
@@ -127,9 +135,9 @@ export const ContactSection: React.FC = () => {
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-[#0A192F] border border-[#64FFDA]/20 text-white focus:outline-none focus:border-[#64FFDA] transition-colors text-sm"
                     >
-                      <option value="General">Question générale / Information</option>
-                      <option value="Deletion">Demande de suppression de compte (MyCircle / Apps)</option>
-                      <option value="Partnership">Proposition de projet / Collaboration</option>
+                      <option value="Question Générale">Question générale / Information</option>
+                      <option value="Demande de Suppression RGPD">Demande de suppression de compte (MyCircle / Apps)</option>
+                      <option value="Collaboration / Projet">Proposition de projet / Collaboration</option>
                     </select>
                   </div>
 
@@ -138,7 +146,7 @@ export const ContactSection: React.FC = () => {
                     <textarea
                       required
                       rows={5}
-                      placeholder="Votre message ici..."
+                      placeholder="Bonjour Loïc, je vous contacte concernant..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-[#0A192F] border border-[#64FFDA]/20 text-white placeholder-[#8892B0]/50 focus:outline-none focus:border-[#64FFDA] transition-colors text-sm resize-none"
@@ -147,9 +155,9 @@ export const ContactSection: React.FC = () => {
 
                   <button
                     type="submit"
-                    className="w-full inline-flex items-center justify-center space-x-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#64FFDA] to-[#6C63FF] text-[#0A192F] font-bold text-base hover:shadow-[0_0_25px_rgba(100,255,218,0.4)] transition-all"
+                    className="w-full inline-flex items-center justify-center space-x-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#64FFDA] to-[#6C63FF] text-[#0A192F] font-bold text-base hover:shadow-[0_0_25px_rgba(100,255,218,0.4)] transition-all cursor-pointer"
                   >
-                    <span>Envoyer le message</span>
+                    <span>Envoyer l'e-mail</span>
                     <Send className="w-5 h-5" />
                   </button>
                 </form>
