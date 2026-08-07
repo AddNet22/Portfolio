@@ -1,0 +1,54 @@
+name: Deploy React Portfolio to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout private repo Portfolio-code
+      - name: Checkout private repo Portfolio-code
+        uses: actions/checkout@v4
+        with:
+          repository: AddNet22/Portfolio-code
+          token: ${{ secrets.PAT_TOKEN }}
+
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # Step 4: Build React Vite app (outputs to dist/)
+      - name: Build Vite App
+        run: npm run build
+
+      # Step 5: Clone public repo Portfolio
+      - name: Clone public Portfolio repo
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git clone https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/AddNet22/Portfolio.git portfolio-repo
+
+      # Step 6: Copy Vite build output (dist) to public Portfolio repo
+      - name: Copy build to Portfolio
+        run: |
+          rm -rf portfolio-repo/*
+          cp -r dist/* portfolio-repo/
+
+      # Step 7: Commit and Push to public Portfolio repo
+      - name: Commit and Push to Portfolio
+        run: |
+          cd portfolio-repo
+          git add .
+          git commit -m "Deploy React Portfolio with app-ads.txt" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/AddNet22/Portfolio.git main
